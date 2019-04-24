@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Database\User;
@@ -12,20 +15,21 @@ class ActivationController extends Controller
         $identifier = $this->param('identifier');
 
         // Make sure we check for an identifier first.
-        if(!$identifier) {
+        if (! $identifier) {
             return $this->redirect('home');
         }
 
         $user = User::where('active_hash', $identifier)->first();
 
-        if(!$user) {
+        if (! $user) {
             $this->flash('error', $this->lang('alerts.account.invalid_active_hash'));
+
             return $this->redirect('auth.login');
         }
 
-        if($user->active) {
-            $this->flash("info", $this->lang('alerts.account.already_activated'));
-            
+        if ($user->active) {
+            $this->flash('info', $this->lang('alerts.account.already_activated'));
+
             $user->update([
                 'active_hash' => null
             ]);
@@ -33,13 +37,13 @@ class ActivationController extends Controller
             return $this->redirect('auth.login');
         }
 
-        if(!$user->active) {
+        if (! $user->active) {
             $user->update([
                 'active' => true,
                 'active_hash' => null,
             ]);
 
-            $this->flash("success", $this->lang('alerts.account.activated'));
+            $this->flash('success', $this->lang('alerts.account.activated'));
 
             return $this->redirect('auth.login');
         }
@@ -47,10 +51,10 @@ class ActivationController extends Controller
 
     public function getResend()
     {
-        if(Session::exists('temp_user_id')) {
+        if (Session::exists('temp_user_id')) {
             $user = User::where('id', Session::get('temp_user_id'))->first();
 
-            if(!$user) {
+            if (! $user) {
                 return $this->redirect('home');
             }
 
@@ -60,7 +64,7 @@ class ActivationController extends Controller
                 'active_hash' => $activeHash
             ]);
 
-            $this->mail->send('/mail/auth/activate.twig', ['hash' => $activeHash, 'user' => $user], function($message) use ($user) {
+            $this->mail->send('/mail/auth/activate.twig', ['hash' => $activeHash, 'user' => $user], function ($message) use ($user): void {
                 $message->to($user->email);
                 $message->subject($this->lang('mail.activation.subject'));
             });
@@ -68,6 +72,7 @@ class ActivationController extends Controller
             Session::destroy('temp_user_id');
 
             $this->flash('info', $this->lang('alerts.login.resend_activation'));
+
             return $this->redirect('auth.login');
         }
 

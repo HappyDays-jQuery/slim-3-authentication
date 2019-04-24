@@ -1,32 +1,35 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'settings' => [
-        'displayErrorDetails' => getenv('APP_ENV') === "production" ? false : true,
+        'displayErrorDetails' => getenv('APP_ENV') === 'production' ? false : true,
         'determineRouteBeforeAppMiddleware' => true,
         'viewTemplatesDirectory' => INC_ROOT . '/../resources/views',
     ],
 
-    'user' => function($c) {
+    'user' => function ($c) {
         return new \App\Database\User;
     },
 
-    'auth' => function($c) {
+    'auth' => function ($c) {
         return new \App\Auth\Auth;
     },
 
-    'hash' => function($c) {
+    'hash' => function ($c) {
         return new \App\Lib\Hash;
     },
 
-    'flash' => function($c) {
+    'flash' => function ($c) {
         return new \App\Lib\Flash;
     },
 
-    'recaptcha' => function($c) {
+    'recaptcha' => function ($c) {
         return new \ReCaptcha\ReCaptcha($c->config->get('plugins.recaptcha.secret'));
     },
 
-    'twig' => function($c) {
+    'twig' => function ($c) {
         $twig = new \Twig_Environment(new \Twig_Loader_Filesystem($c['settings']['viewTemplatesDirectory']));
 
         // We need to load this again to use our functions with our mailing system.
@@ -35,9 +38,9 @@ return [
         return $twig;
     },
 
-    'view' => function($c) {
+    'view' => function ($c) {
         $view = new \Slim\Views\Twig($c['settings']['viewTemplatesDirectory'], [
-            'debug' => env('APP_ENV', 'development') === "production" ? false : true
+            'debug' => env('APP_ENV', 'development') === 'production' ? false : true
         ]);
 
         $view->getEnvironment()->addGlobal('auth', [
@@ -54,18 +57,20 @@ return [
         return $view;
     },
 
-    'notFoundHandler' => function($c) {
-        return function($request, $response) use ($c) {
+    'notFoundHandler' => function ($c) {
+        return function ($request, $response) use ($c) {
             $response = $response->withStatus(404);
+
             return $c->view->render($response, 'errors/404.twig', [
                 'request_uri' => urldecode($_SERVER['REQUEST_URI'])
             ]);
         };
     },
 
-    'notAllowedHandler' => function($c) {
+    'notAllowedHandler' => function ($c) {
         return function ($request, $response, $methods) use ($c) {
             $response = $response->withStatus(405);
+
             return $c->view->render($response, 'errors/405.twig', [
                 'request_uri' => $_SERVER['REQUEST_URI'],
                 'method' => $_SERVER['REQUEST_METHOD'],
@@ -74,15 +79,15 @@ return [
         };
     },
 
-    'errorHandler' => function($c) {
-        return function($request, $response, $exception) use ($c) {
+    'errorHandler' => function ($c) {
+        return function ($request, $response, $exception) use ($c) {
             $response = $response->withStatus(500);
 
             $data = [
                 'exception' => null
             ];
 
-            if(env('APP_ENV') === "development") {
+            if (env('APP_ENV') === 'development') {
                 $data['exception'] = $exception->getMessage();
             }
 
@@ -90,24 +95,24 @@ return [
         };
     },
 
-    'csrf' => function($c) {
+    'csrf' => function ($c) {
         $guard = new \Slim\Csrf\Guard;
 
-        $guard->setFailureCallable(function($request, $response, $next) use ($c) {
-            $request = $request->withAttribute("csrf_status", false);
-            if($request->getAttribute('csrf_status') === false) {
-                $c['flash']->addMessage('error', "CSRF verification failed, terminating your request.");
+        $guard->setFailureCallable(function ($request, $response, $next) use ($c) {
+            $request = $request->withAttribute('csrf_status', false);
+            if ($request->getAttribute('csrf_status') === false) {
+                $c['flash']->addMessage('error', 'CSRF verification failed, terminating your request.');
 
                 return $response->withStatus(400)->withRedirect($c['router']->pathFor('home'));
-            } else {
-                return $next($request, $response);
             }
+
+            return $next($request, $response);
         });
 
         return $guard;
     },
 
-    'db' => function($c) {
+    'db' => function ($c) {
         $capsule = new \Illuminate\Database\Capsule\Manager;
 
         $capsule->addConnection($c['config']->get('database'), 'default');
@@ -115,7 +120,7 @@ return [
         return $capsule;
     },
 
-    'mail' => function($c) {
+    'mail' => function ($c) {
         $mailer = new \PHPMailer;
 
         $mailer->isSMTP();

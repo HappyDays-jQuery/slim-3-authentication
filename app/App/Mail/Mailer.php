@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use App\Mail\Mailtrap\Message;
@@ -14,7 +17,7 @@ class Mailer
         $this->container = $container;
     }
 
-    public function send($template, $data, $callback)
+    public function send($template, $data, $callback): void
     {
         $message = new Message($this->mailer);
 

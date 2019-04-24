@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Console;
 
 use Interop\Container\ContainerInterface;
@@ -20,7 +23,7 @@ abstract class Command extends SymfonyCommand
         $this->ci = $ci;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName($this->command)->setDescription($this->description);
 
@@ -46,14 +49,14 @@ abstract class Command extends SymfonyCommand
         return $this->input->getOption($name);
     }
 
-    protected function addArguments()
+    protected function addArguments(): void
     {
         foreach ($this->arguments() as $argument) {
             $this->addArgument($argument[0], $argument[1], $argument[2]);
         }
     }
 
-    protected function addOptions()
+    protected function addOptions(): void
     {
         foreach ($this->options() as $option) {
             $this->addOption($option[0], $option[1], $option[2], $option[3], $option[4]);

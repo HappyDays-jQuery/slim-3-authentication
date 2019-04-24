@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Lib;
 
 class Cookie
@@ -15,14 +18,14 @@ class Cookie
 
     public static function set($name, $value, $expiry, $secure = false)
     {
-        if(setcookie($name, $value, $expiry, '/', null, $secure, true)) {
+        if (setcookie($name, $value, $expiry, '/', null, $secure, true)) {
             return true;
         }
 
         return false;
     }
 
-    public static function destroy($name)
+    public static function destroy($name): void
     {
         self::set($name, '', time() - 1);
     }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Database;
 
 use App\Traits\HasPermissionsTrait;
@@ -10,9 +13,9 @@ class User extends Model
 
     protected $table = 'users';
 
-    protected $fillable = ['username', 'email', 'password', 'active', 'active_hash', 'remember_identifier', 'remember_token', 'recover_hash']; 
+    protected $fillable = ['username', 'email', 'password', 'active', 'active_hash', 'remember_identifier', 'remember_token', 'recover_hash'];
 
-    public function updateRememberCredentials($identifier, $token)
+    public function updateRememberCredentials($identifier, $token): void
     {
         $this->update([
             'remember_identifier' => $identifier,
@@ -20,19 +23,19 @@ class User extends Model
         ]);
     }
 
-    public function removeRememberCredentials()
+    public function removeRememberCredentials(): void
     {
         $this->updateRememberCredentials(null, null);
     }
 
-    public function revokeRecoveryHash()
+    public function revokeRecoveryHash(): void
     {
         $this->update([
             'recover_hash' => null,
         ]);
     }
 
-    public function activate($value = true, $hash = null)
+    public function activate($value = true, $hash = null): void
     {
         $this->update([
             'active' => $value,
@@ -40,7 +43,7 @@ class User extends Model
         ]);
     }
 
-    public function deactivate($hash = null)
+    public function deactivate($hash = null): void
     {
         $this->activate(false, $hash);
     }
@@ -63,18 +66,17 @@ class User extends Model
     /**
      * Make this functionality better.
      */
-
     public function giveRole($title)
     {
         $role = Role::where('title', $title)->first();
 
-        if(!$role) {
+        if (! $role) {
             return false;
         }
 
         $userRoles = $this->userRoles();
 
-        if($userRoles->where('role_id', $role->id)->first()) {
+        if ($userRoles->where('role_id', $role->id)->first()) {
             return true;
         }
 
@@ -86,42 +88,41 @@ class User extends Model
     /**
      * Make this functionality better.
      */
-
     public function removeRole($title)
     {
         $role = Role::where('title', $title)->first();
 
-        if(!$role) {
+        if (! $role) {
             return false;
         }
 
         $userRole = $this->userRoles()->where('role_id', $role->id)->first();
 
-        if($userRole) {
+        if ($userRole) {
             return $userRole->delete();
         }
 
         return true;
     }
-    
+
     public function can($action)
     {
         $permission = Permission::where('name', $action)->first();
 
-        if(!$permission) {
+        if (! $permission) {
             return false;
         }
 
         return $this->hasPermissionTo($permission);
     }
 
-    public function canEdit(User $user)
+    public function canEdit(self $user)
     {
-        if($this->isSuperAdmin() && $user->isSuperAdmin()) {
+        if ($this->isSuperAdmin() && $user->isSuperAdmin()) {
             return false;
         }
-        
-        if($user->isAdmin() && $this->can('edit admins') || !$user->isAdmin() && $this->can('edit users') && !$user->isSuperAdmin()) {
+
+        if ($user->isAdmin() && $this->can('edit admins') || ! $user->isAdmin() && $this->can('edit users') && ! $user->isSuperAdmin()) {
             return true;
         }
 

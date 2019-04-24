@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'app' => [
         'environment' => env('APP_ENV', 'development'),

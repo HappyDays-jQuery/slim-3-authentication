@@ -1,7 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use App\Http\Middleware\Middleware;
 use App\Lib\Session;
 
 class OldInputMiddleware extends Middleware
@@ -10,8 +12,7 @@ class OldInputMiddleware extends Middleware
     {
         Session::set('old', $request->getParams());
         $this->container->view->getEnvironment()->addGlobal('old', Session::get('old'));
-        
-        $response = $next($request, $response);
-        return $response;
+
+        return $next($request, $response);
     }
 }

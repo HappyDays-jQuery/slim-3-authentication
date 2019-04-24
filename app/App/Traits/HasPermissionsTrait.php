@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use App\Database\Permission;
@@ -16,7 +19,7 @@ trait HasPermissionsTrait
             return $this;
         }
 
-        if($this->permissions()->exists($permissions)) {
+        if ($this->permissions()->exists($permissions)) {
             return $this;
         }
 
@@ -57,6 +60,16 @@ trait HasPermissionsTrait
         return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'users_roles', 'user_id');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'users_permissions', 'user_id');
+    }
+
     protected function hasPermissionThroughRole($permission)
     {
         foreach ($permission->roles as $role) {
@@ -78,17 +91,6 @@ trait HasPermissionsTrait
         return Permission::whereIn('name', $permissions)->get();
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'users_roles', 'user_id');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'users_permissions', 'user_id');
-    }
-
-
     protected function flatten($array, $depth = INF)
     {
         return array_reduce($array, function ($result, $item) use ($depth) {
@@ -96,11 +98,12 @@ trait HasPermissionsTrait
 
             if (! is_array($item)) {
                 return array_merge($result, [$item]);
-            } elseif ($depth === 1) {
-                return array_merge($result, array_values($item));
-            } else {
-                return array_merge($result, $this->flatten($item, $depth - 1));
             }
+            if ($depth === 1) {
+                return array_merge($result, array_values($item));
+            }
+
+            return array_merge($result, $this->flatten($item, $depth - 1));
         }, []);
     }
 }

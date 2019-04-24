@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 $app->route(['GET'], '/', App\Http\Controllers\HomeController::class)->setName('home');
 
-$app->group('/auth', function() {
+$app->group('/auth', function (): void {
     $this->route(['GET', 'POST'], '/login', App\Http\Controllers\Auth\LoginController::class)
         ->add(new App\Http\Middleware\GuestMiddleware($this->getContainer()))
         ->add(new App\Http\Middleware\RequiresSecureRequestMiddleware($this->getContainer()))
@@ -43,7 +45,7 @@ $app->group('/auth', function() {
         ->setName('auth.password.reset');
 });
 
-$app->group('/admin', function() {
+$app->group('/admin', function (): void {
     $this->route(['GET'], '[/]', App\Http\Controllers\Admin\AdminController::class)->setName('admin.home');
 
     $this->route(['GET'], '/users[/]', App\Http\Controllers\Admin\AdminUserController::class)->setName('admin.users.list');
@@ -59,8 +61,8 @@ $app->group('/admin', function() {
     $this->route(['POST'], '/users/{userId}/update/role/{role}/{action}', App\Http\Controllers\Admin\AdminUserController::class, 'updateRole')->setName('admin.users.update.role');
 })->add(new App\Http\Middleware\AdminMiddleware($app->getContainer()));
 
-$app->get('/auth/logout', function($request, $response, $args) {
-    if(App\Lib\Cookie::exists(env('APP_REMEMBER_ID', 'APP_REMEMBER_TOKEN'))) {
+$app->get('/auth/logout', function ($request, $response, $args) {
+    if (App\Lib\Cookie::exists(env('APP_REMEMBER_ID', 'APP_REMEMBER_TOKEN'))) {
         $this['auth']->user()->removeRememberCredentials();
         App\Lib\Cookie::destroy(env('APP_REMEMBER_ID', 'APP_REMEMBER_TOKEN'));
     }

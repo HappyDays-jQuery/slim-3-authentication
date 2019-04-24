@@ -1,9 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Database\User;
 use App\Http\Controllers\Controller;
-use App\Lib\Session;
 
 class RegisterController extends Controller
 {
@@ -19,11 +21,12 @@ class RegisterController extends Controller
         $password = $this->param('password');
         $confirm_password = $this->param('confirm_password');
 
-        if($this->config('app.activation.method') === 'recaptcha') {
+        if ($this->config('app.activation.method') === 'recaptcha') {
             $recaptcha = $this->param('g-recaptcha-response');
 
-            if(!$this->recaptcha->verify($recaptcha)->isSuccess()) {
+            if (! $this->recaptcha->verify($recaptcha)->isSuccess()) {
                 $this->flash('warning', $this->lang('alerts.recaptcha_failed'));
+
                 return $this->redirect('auth.register');
             }
         }
@@ -35,7 +38,7 @@ class RegisterController extends Controller
             'confirm_password|Confirm Password' => [$confirm_password, 'required|matches(password)'],
         ]);
 
-        if($validator->passes()) {
+        if ($validator->passes()) {
             $activeHash = $this->hash->generate(128);
 
             $user = User::create([
@@ -46,9 +49,9 @@ class RegisterController extends Controller
                 'active' => false,
             ]);
 
-            if($this->config('app.activation.method') === 'mail') {
+            if ($this->config('app.activation.method') === 'mail') {
                 $this->flash('info', $this->lang('alerts.registration.requires_mail_activation'));
-                $this->mail->send('/mail/auth/activate.twig', ['hash' => $activeHash, 'user' => $user], function($message) use ($user) {
+                $this->mail->send('/mail/auth/activate.twig', ['hash' => $activeHash, 'user' => $user], function ($message) use ($user): void {
                     $message->to($user->email);
                     $message->subject($this->lang('mail.activation.subject'));
                 });
@@ -65,6 +68,7 @@ class RegisterController extends Controller
         }
 
         $this->flashNow('error', $this->lang('alerts.registration.error'));
+
         return $this->render('auth/register', [
             'errors' => $validator->errors(),
         ]);

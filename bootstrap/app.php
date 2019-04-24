@@ -1,19 +1,21 @@
 <?php
+
+declare(strict_types=1);
 session_start();
 
-use Dotenv\Dotenv;
-use Noodlehaus\Config;
 use App\App;
 use App\Http\Middleware\CsrfMiddleware;
 use App\Http\Middleware\OldInputMiddleware;
 use App\Http\Middleware\RememberMiddleware;
+use Dotenv\Dotenv;
+use Noodlehaus\Config;
 use Slim\Container;
 
 define('INC_ROOT', __DIR__);
 
 require INC_ROOT . '/../vendor/autoload.php';
 
-if(file_exists(__DIR__ . '/../.env')) {
+if (file_exists(__DIR__ . '/../.env')) {
     $env = new Dotenv(__DIR__ . '/../');
     $env->load();
 }
@@ -24,7 +26,7 @@ $app = new App(new Container(
 
 $container = $app->getContainer();
 
-$container['config'] = function($c) {
+$container['config'] = function ($c) {
     return new Config(INC_ROOT . '/../config');
 };
 

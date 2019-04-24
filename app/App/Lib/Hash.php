@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Lib;
 
 use RandomLib\Factory as RandomLib;
@@ -22,7 +25,7 @@ class Hash
         return password_verify($givenPassword, $knownPassword);
     }
 
-    public function generate($length = 64, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') 
+    public function generate($length = 64, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
     {
         return $this->generator()->generateString($length, $characters);
     }
@@ -47,11 +50,13 @@ class Hash
         if (func_num_args() !== 2) {
             // handle wrong parameter count as the native implentation
             trigger_error('hash_verify() expects exactly 2 parameters, ' . func_num_args() . ' given', E_USER_WARNING);
-            return null;
+
+            return;
         }
 
         if (is_string($known_string) !== true) {
             trigger_error('hash_verify(): Expected known_string to be a string, ' . gettype($known_string) . ' given', E_USER_WARNING);
+
             return false;
         }
 

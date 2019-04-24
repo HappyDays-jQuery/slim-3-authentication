@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Console;
 
 use Symfony\Component\Console\Application;
@@ -13,7 +16,7 @@ class Console extends Application
         $this->slim = $slim;
     }
 
-    public function boot(Kernel $kernel)
+    public function boot(Kernel $kernel): void
     {
         foreach ($kernel->getCommands() as $command) {
             $this->add(new $command($this->getSlim()->getContainer()));

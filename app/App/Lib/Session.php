@@ -1,11 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Lib;
 
 class Session
 {
     public static function get($key, $default = null)
     {
-        if(self::exists($key)) {
+        if (self::exists($key)) {
             return $_SESSION[$key];
         }
 
@@ -17,9 +20,9 @@ class Session
         return (isset($_SESSION[$key])) ? true : false;
     }
 
-    public static function destroy($key)
+    public static function destroy($key): void
     {
-        if(self::exists($key)) {
+        if (self::exists($key)) {
             unset($_SESSION[$key]);
         }
     }

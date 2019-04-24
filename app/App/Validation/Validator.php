@@ -1,8 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Validation;
 
-use Violin\Violin;
 use Interop\Container\ContainerInterface;
+use Violin\Violin;
 
 class Validator extends Violin
 {
@@ -43,30 +46,30 @@ class Validator extends Violin
 
         $this->addRuleMessages([
             'matchesCurrentPassword' => 'Your current password is incorrect.',
-            'adminUniqueEmail' => "This e-mail is tied to another account.",
-            'adminUniqueUsername' => "This username is taken by another account.",
+            'adminUniqueEmail' => 'This e-mail is tied to another account.',
+            'adminUniqueUsername' => 'This username is taken by another account.',
         ]);
     }
 
     public function validate_uniqueUsername($value, $input, $args)
     {
-        return !(bool) $this->auth->where('username', $value)->count();
+        return ! (bool) $this->auth->where('username', $value)->count();
     }
 
     public function validate_uniqueEmail($value, $input, $args)
     {
         $user = $this->auth->where('email', $value);
 
-        if($this->auth->check() && $this->auth->user()->email === $value) {
+        if ($this->auth->check() && $this->auth->user()->email === $value) {
             return true;
         }
 
-        return !(bool) $user->count();
+        return ! (bool) $user->count();
     }
 
     public function validate_matchesCurrentPassword($value, $input, $args)
     {
-        if($this->auth->check() && $this->container->hash->verifyPassword($value, $this->auth->user()->password)) {
+        if ($this->auth->check() && $this->container->hash->verifyPassword($value, $this->auth->user()->password)) {
             return true;
         }
 
@@ -77,29 +80,29 @@ class Validator extends Violin
     {
         $user = $this->container->user->where('email', $args[0])->first();
 
-        if(!$user) {
+        if (! $user) {
             return false;
         }
 
-        if($user->email === $value) {
+        if ($user->email === $value) {
             return true;
         }
 
-        return !(bool) $this->container->user->where('email', $value)->count();
+        return ! (bool) $this->container->user->where('email', $value)->count();
     }
 
     public function validate_adminUniqueUsername($value, $input, $args)
     {
         $user = $this->container->user->where('username', $args[0])->first();
 
-        if(!$user) {
+        if (! $user) {
             return false;
         }
 
-        if($user->username === $value) {
+        if ($user->username === $value) {
             return true;
         }
 
-        return !(bool) $this->container->user->where('username', $value)->count();
+        return ! (bool) $this->container->user->where('username', $value)->count();
     }
 }

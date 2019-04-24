@@ -1,7 +1,8 @@
 <?php
-namespace App\Http\Middleware;
 
-use App\Http\Middleware\Middleware;
+declare(strict_types=1);
+
+namespace App\Http\Middleware;
 
 class CsrfMiddleware extends Middleware
 {
@@ -14,7 +15,6 @@ class CsrfMiddleware extends Middleware
             '
         ]);
 
-        $response = $next($request, $response);
-        return $response;
+        return $next($request, $response);
     }
 }

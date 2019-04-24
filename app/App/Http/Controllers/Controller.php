@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Validation\Validator;
@@ -7,10 +10,12 @@ use Slim\Exception\NotFoundException;
 /**
  * All controllers should extend this class.
  */
-
 class Controller
 {
-    protected $request, $response, $args, $container;
+    protected $request;
+    protected $response;
+    protected $args;
+    protected $container;
 
     public function __construct($request, $response, $args, $container)
     {
@@ -34,7 +39,7 @@ class Controller
 
     public function lang($key)
     {
-        return $this->config("lang." . $key);
+        return $this->config('lang.' . $key);
     }
 
     public function param($name)
@@ -64,7 +69,7 @@ class Controller
         return $this->response->withRedirect($this->router()->pathFor($path, $args, $params));
     }
 
-    public function notFound()
+    public function notFound(): void
     {
         throw new NotFoundException($this->request, $this->response);
     }

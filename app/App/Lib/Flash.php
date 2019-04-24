@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Lib;
 
 use Slim\Flash\Messages;
@@ -7,9 +10,9 @@ class Flash extends Messages
 {
     protected $forNow = [];
 
-    public function addMessageNow($key, $message)
+    public function addMessageNow($key, $message): void
     {
-        if(!isset($this->forNow[$key])) {
+        if (! isset($this->forNow[$key])) {
             $this->forNow[$key] = [];
         }
 
@@ -20,12 +23,12 @@ class Flash extends Messages
     {
         $messages = $this->fromPrevious;
 
-        foreach($this->forNow as $key => $values) {
-            if(!isset($messages[$key])){
+        foreach ($this->forNow as $key => $values) {
+            if (! isset($messages[$key])) {
                 $messages[$key] = [];
             }
 
-            foreach($values as $value){
+            foreach ($values as $value) {
                 array_push($messages[$key], $value);
             }
         }
@@ -36,6 +39,7 @@ class Flash extends Messages
     public function getMessage($key)
     {
         $messages = $this->getMessages();
+
         return (isset($messages[$key])) ? $messages[$key] : null;
     }
 }

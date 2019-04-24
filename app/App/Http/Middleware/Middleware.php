@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Interop\Container\ContainerInterface;
@@ -23,7 +26,7 @@ class Middleware
         return $this->auth()->user();
     }
 
-    public function flash($type, $message)
+    public function flash($type, $message): void
     {
         $this->container->flash->addMessage($type, $message);
     }
@@ -35,7 +38,7 @@ class Middleware
 
     public function lang($key)
     {
-        return $this->config("lang." . $key);
+        return $this->config('lang.' . $key);
     }
 
     public function redirect($response, $path)
@@ -43,7 +46,7 @@ class Middleware
         return $response->withRedirect($this->router()->pathFor($path));
     }
 
-    public function notFound($request, $response)
+    public function notFound($request, $response): void
     {
         throw new NotFoundException($request, $response);
     }
@@ -55,7 +58,7 @@ class Middleware
 
     protected function isSecure()
     {
-        if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' || !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+        if (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' || ! empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
             return true;
         }
 

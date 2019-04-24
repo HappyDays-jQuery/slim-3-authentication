@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -15,8 +18,9 @@ class PasswordResetController extends Controller
         $email = $this->param('email');
         $response = $this->recaptcha->verify($this->param('g-recaptcha-response'));
 
-        if(!$response->isSuccess()) {
+        if (! $response->isSuccess()) {
             $this->flash('warning', $this->lang('alerts.recaptcha_failed'));
+
             return $this->redirect('auth.password.forgot');
         }
 
@@ -24,27 +28,29 @@ class PasswordResetController extends Controller
             'email|E-Mail' => [$email, 'required|email'],
         ]);
 
-        if($validator->passes()) {
+        if ($validator->passes()) {
             $user = $this->auth->where('email', $email)->first();
 
-            if($user) {
+            if ($user) {
                 $identifier = $this->hash->generate();
 
                 $user->update([
                     'recover_hash' => $this->hash->hash($identifier),
                 ]);
 
-                $this->mail->send('/mail/password/forgot.twig', ['identifier' => $identifier, 'date' => \Carbon\Carbon::now()->toFormattedDateString(), 'user' => $user], function($message) use ($user) {
+                $this->mail->send('/mail/password/forgot.twig', ['identifier' => $identifier, 'date' => \Carbon\Carbon::now()->toFormattedDateString(), 'user' => $user], function ($message) use ($user): void {
                     $message->to($user->email);
                     $message->subject($this->lang('mail.password.forgot.subject'));
                 });
             }
 
-            $this->flash("info", $this->lang('alerts.forgot_password_success'));
+            $this->flash('info', $this->lang('alerts.forgot_password_success'));
+
             return $this->redirect('auth.login');
         }
 
         $this->flash('error', $this->lang('alerts.forgot_password_failed'));
+
         return $this->redirect('auth.password.forgot');
     }
 
@@ -52,7 +58,7 @@ class PasswordResetController extends Controller
     {
         $identifier = $this->param('identifier');
 
-        if(!$identifier) {
+        if (! $identifier) {
             return $this->redirect('auth.login');
         }
 
@@ -68,8 +74,9 @@ class PasswordResetController extends Controller
         $newPassword = $this->param('new_password');
         $confirmNewPassword = $this->param('confirm_new_password');
 
-        if(!$email) {
+        if (! $email) {
             $this->flash('error', $this->lang('alerts.reset_password_no_email'));
+
             return $this->redirect('auth.password.reset', [], [
                 'identifier' => $identifier,
             ]);
@@ -77,19 +84,20 @@ class PasswordResetController extends Controller
 
         $user = $this->auth->where('email', $email)->first();
 
-        if(!$user) {
+        if (! $user) {
             return $this->redirect('auth.login');
         }
 
         $knownIdentifier = $user->recover_hash;
         $userHash = $this->hash->hash($identifier);
 
-        if(!$knownIdentifier || !$this->hash->verifyHash($knownIdentifier, $userHash)) {
+        if (! $knownIdentifier || ! $this->hash->verifyHash($knownIdentifier, $userHash)) {
             $user->update([
                 'recover_hash' => null,
             ]);
 
             $this->flash('error', $this->lang('alerts.reset_password_invalid'));
+
             return $this->redirect('auth.password.forgot');
         }
 
@@ -98,17 +106,19 @@ class PasswordResetController extends Controller
             'confirm_new_password|Confirm New Password' => [$confirmNewPassword, 'required|matches(new_password)']
         ]);
 
-        if($validator->passes()) {
+        if ($validator->passes()) {
             $user->update([
                 'recover_hash' => null,
                 'password' => $this->hash->password($newPassword),
             ]);
 
             $this->flash('success', $this->lang('alerts.reset_password_success'));
+
             return $this->redirect('auth.login');
         }
 
         $this->flashNow('error', $this->lang('alerts.reset_password_failed'));
+
         return $this->render('auth/password/reset', [
             'identifier' => $identifier,
             'errors' => $validator->errors(),

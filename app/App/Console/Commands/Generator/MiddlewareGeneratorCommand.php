@@ -1,9 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Console\Commands\Generator;
 
 use App\Console\Command;
 use App\Console\Traits\Generatable;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,7 +35,7 @@ class MiddlewareGeneratorCommand extends Command
 
             $namespace = $namespace . '\\' . str_replace('/', '\\', $cleanPath);
 
-            if (!is_dir($path)) {
+            if (! is_dir($path)) {
                 mkdir($path, 0777, true);
             }
         }
