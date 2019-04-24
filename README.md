@@ -13,7 +13,7 @@ If you stumble upon any vulnerabilities within this package, more importantly wi
 You will need the following to get started:
 
 * A web server with URL rewriting
- - PHP 5.5 or newer
+ - PHP 7.1
  - A SSL certificate will be required in production environments! Check out [HTTPS Is Easy](https://httpsiseasy.com/) for help setting this up!  
 * [Composer](https://getcomposer.org/)
 * [Yarn](https://yarnpkg.com/) or [npm](https://www.npmjs.com/)
