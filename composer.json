@@ -37,5 +37,37 @@
         "hassankhan/config": "^0.10.0",
 		"symfony/console": "^3.1",
 		"google/recaptcha": "~1.1"
-    }
+    },
+	"require-dev": {
+		"davedevelopment/phpmig": "^1.5",
+		"phpunit/phpunit": "^7.5",
+		"squizlabs/php_codesniffer": "^3.2",
+		"friendsofphp/php-cs-fixer": "^2.11",
+		"phpmd/phpmd": "^2.6",
+		"phpstan/phpstan-shim": "^0.10"
+	},
+	"scripts": {
+		"install": "cp .env-example .env",
+		"start": "php -S localhost:8080 -t public",
+		"test": [
+			"vendor/bin/phpunit"
+		],
+		"tests": [
+			"@cs",
+			"vendor/bin/phpmd src,tests text ./phpmd.xml",
+			"vendor/bin/phpstan analyse -l max src tests -c phpstan.neon --no-progress",
+			"@test"
+		],
+		"coverage": [
+			"php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+		],
+		"cs": [
+			"vendor/bin/php-cs-fixer fix -v --dry-run",
+			"vendor/bin/phpcs --standard=phpcs.xml src;"
+		],
+		"cs-fix": [
+			"vendor/bin/php-cs-fixer fix -v",
+			"vendor/bin/phpcbf src tests"
+		]
+	}
 }
