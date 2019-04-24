@@ -21,7 +21,7 @@ You will need the following to get started:
 ### Installing
 #### Clone the project:
 ```
-git clone https://github.com/devsavage/slim-3-authentication.git your-project-name
+git clone https://github.com/HappyDays-jQuery/slim-3-authentication your-project-name
 ```
 
 #### Install the composer dependencies:
