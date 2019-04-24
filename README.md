@@ -4,7 +4,7 @@ A very easy to use Slim 3 authentication system.
 [![Latest Unstable Version](https://poser.pugx.org/devsavage/slim-3-authentication/v/unstable?format=flat-square)](https://packagist.org/packages/devsavage/slim-3-authentication)
 [![License](https://poser.pugx.org/devsavage/slim-3-authentication/license?format=flat-square)](https://packagist.org/packages/devsavage/slim-3-authentication)
 
-If you stumble upon any vulnerabilities within this package, more importantly with the role/permission system, please send your findings to: **savage@savagedev.io**.  
+If you stumble upon any vulnerabilities within this package, more importantly with the role/permission system, please send your findings to: **developer@jquery.tokyo**.  
 
 ## Getting Started
 
