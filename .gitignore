@@ -3,3 +3,9 @@
 .env
 /node_modules
 .phpintel
+
+/phpunit.xml
+/.php_cs.cache
+
+/logs/*
+!/logs/.gitkeep
