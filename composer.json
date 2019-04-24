@@ -1,16 +1,16 @@
 {
-	"name": "devsavage/slim-3-authentication",
-	"description": "An authentication system using the Slim Framework.",
+	"name": "slim-3-authentication",
+	"description": "forked from devsavage/slim-3-authentication (https://github.com/devsavage/slim-3-authentication). An authentication system using the Slim Framework.",
 	"type": "project",
-	"version": "2.0.0",
+	"version": "1.0.0",
     "keywords": ["authentication","slim-3", "slim3", "slimframework", "slim-framework"],
-	"homepage": "https://github.com/devsavage/slim-3-authentication",
+	"homepage": "https://github.com/HappyDays-jQuery",
 	"license": "MIT",
     "authors": [
         {
-            "name": "Savage",
-            "email": "savage@savagedev.io",
-            "homepage": "https://savagedev.io",
+            "name": "HappyDays-jQuery",
+            "email": "developer@jquery.tokyo",
+            "homepage": "https://github.com/HappyDays-jQuery",
             "role": "Developer"
         }
     ],
